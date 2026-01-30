@@ -1,0 +1,138 @@
+/* CORES VITAE CENTER */
+:root {
+  --vitae-red: #a83b3b;
+  --vitae-green: #22c55e;
+  --vitae-blue: #1e40af;
+  --vitae-gray-dark: #2c2c2c;
+  --vitae-gray-text: #4a4a4a;
+  --bg: #f7f9fb;
+}
+
+/* CLASSES DE COR */
+.text-vitae-red { color: var(--vitae-red) !important; }
+.text-vitae-green { color: var(--vitae-green) !important; }
+.text-vitae-blue { color: var(--vitae-blue) !important; }
+.text-vitae-black { color: #000000 !important; }
+
+/* INPUT COM ÍCONE NO TOPO (ícone fora do campo, alinhado ao topo) */
+.input-with-icon-top {
+  display: flex;
+  align-items: flex-start;   /* alinha ícone no topo */
+  gap: 0.75rem;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.input-with-icon-top .icon {
+  font-size: 1.05rem;
+  color: var(--vitae-gray-text);
+  margin-top: 0.35rem; /* ajusta para ficar no topo do input */
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+}
+
+.input-with-icon-top .input-wrapper {
+  flex: 1 1 auto;
+}
+
+/* Garante que o input ocupe todo o espaço disponível */
+.input-with-icon-top .input-wrapper .p-inputtext {
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+/* Labels com ícones (se quiser ícone junto ao label) */
+.label-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  color: var(--vitae-gray-text);
+  font-weight: 600;
+}
+
+/* BOTÕES PERSONALIZADOS */
+.p-button.p-button-registrar {
+  background-color: var(--vitae-green) !important;
+  border-color: var(--vitae-green) !important;
+  color: white !important;
+}
+
+.p-button.p-button-registrar:hover {
+  background-color: #16a34a !important;
+}
+
+.p-button.p-button-cancelar {
+  background-color: var(--vitae-red) !important;
+  border-color: var(--vitae-red) !important;
+  color: white !important;
+}
+
+.p-button.p-button-cancelar:hover {
+  background-color: #8e3232 !important;
+}
+
+/* SIDEBAR e MENU */
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 18px;
+  border-radius: 8px;
+  color: #ffffff !important;
+  text-decoration: none;
+  margin-bottom: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.menu-item.active {
+  background: var(--vitae-red) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(168, 59, 59, 0.25);
+}
+
+/* CARDS DASHBOARD */
+.card-stats {
+  background: white !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
+  padding: 1rem !important;
+}
+
+.card-total { border-left: 6px solid var(--vitae-blue) !important; }
+.card-elogios { border-left: 6px solid var(--vitae-green) !important; }
+.card-reclamacoes { border-left: 6px solid var(--vitae-red) !important; }
+
+/* LAYOUT GERAL */
+body, html, #root {
+  height: 100%;
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--bg);
+  color: var(--vitae-gray-text);
+}
+
+/* DIALOG CUSTOM */
+.custom-dialog .p-dialog-header {
+  font-weight: 700;
+  color: var(--vitae-red);
+  font-size: 1.15rem;
+}
+
+.custom-dialog .p-dialog-footer {
+  padding: 1rem 1.5rem;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 640px) {
+  .custom-dialog {
+    width: 95% !important;
+  }
+
+  .input-with-icon-top {
+    gap: 0.5rem;
+  }
+}
