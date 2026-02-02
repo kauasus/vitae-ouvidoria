@@ -35,6 +35,13 @@ const Sidebar: React.FC = () => {
         >
           <i className="pi pi-list mr-2"></i> Manifestações
         </NavLink>
+
+        <NavLink
+          to="/prontuario/admin"
+          className={({ isActive }) => (isActive ? "menu-item active" : "menu-item")}
+        >
+          <i className="pi pi-folder-open mr-2"></i> Prontuários
+        </NavLink>
       </nav>
     </aside>
   );

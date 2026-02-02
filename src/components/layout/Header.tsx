@@ -1,22 +1,43 @@
 import React from "react";
-import logo from "../../assets/vitae.png";
+import { Button } from "primereact/button";
+import { useNavigate } from "react-router-dom";
+import { authService } from "../../services/authServices";
 
 const Header: React.FC = () => {
-  return (
-    <header style={{ height: 64, background: "var(--header-bg)", display: "flex", alignItems: "center", padding: "0 20px", color: "var(--header-fore)" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <img src={logo} alt="Vitae Center" style={{ height: 40 }} />
-        <div>
-          <div style={{ fontWeight: 700 }}>Ouvidoria</div>
-          <small style={{ opacity: 0.8 }}>Sistema de Gestão</small>
-        </div>
-      </div>
+  const navigate = useNavigate();
+  const user = authService.getCurrentUser();
 
-      <div style={{ marginLeft: "auto" }}>
-        <button className="p-button p-button-text" style={{ color: "var(--muted)" }}>
-          Olá, Admin
-        </button>
+  const handleLogout = () => {
+    authService.logout();
+    navigate("/login");
+  };
+
+  return (
+    <header
+      style={{
+        background: "#2c2c2c",
+        color: "#fff",
+        padding: "12px 24px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        borderBottom: "1px solid rgba(255,255,255,0.1)",
+      }}
+    >
+      <div>
+        <h2 style={{ margin: 0, fontSize: "1.2rem" }}>Vitae Center</h2>
+        {user && (
+          <p style={{ margin: 0, fontSize: "0.85rem", opacity: 0.7 }}>
+            Olá, {user.nome} ({user.role === "admin" ? "Administrador" : "Usuário"})
+          </p>
+        )}
       </div>
+      <Button
+        label="Sair"
+        icon="pi pi-sign-out"
+        className="p-button-sm p-button-danger"
+        onClick={handleLogout}
+      />
     </header>
   );
 };

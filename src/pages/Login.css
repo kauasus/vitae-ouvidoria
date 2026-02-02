@@ -1,0 +1,100 @@
+/* ========== VITAE CENTER - LOGIN PAGE ========== */
+
+.vitae-login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f4f4;
+  background-image: radial-gradient(circle, #ffffff 0%, #e0e0e0 100%);
+}
+
+.vitae-login-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border-top: 5px solid #A33333;
+}
+
+.vitae-login-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2rem;
+}
+
+.vitae-login-logo {
+  width: 180px;
+  margin-bottom: 10px;
+}
+
+.vitae-login-divider {
+  height: 2px;
+  width: 50px;
+  background: #A33333;
+  margin-bottom: 10px;
+}
+
+.vitae-login-title {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.vitae-login-title h2 {
+  color: #4A4A4A;
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.vitae-login-title small {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.vitae-login-icon {
+  color: #A33333 !important;
+}
+
+.vitae-login-input {
+  border-radius: 8px !important;
+}
+
+.vitae-login-button {
+  background: #A33333 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: bold !important;
+  letter-spacing: 1px !important;
+  padding: 0.75rem !important;
+}
+
+.vitae-login-button:hover {
+  background: #822828 !important;
+}
+
+.vitae-login-button:focus {
+  box-shadow: 0 0 0 0.2rem rgba(163, 51, 51, 0.5) !important;
+}
+
+.vitae-login-footer {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.vitae-login-footer p {
+  font-size: 0.8rem;
+  color: #999;
+  margin: 0;
+}
+
+/* Ajuste para o Password do PrimeReact */
+.vitae-login-password .p-password-input {
+  border-radius: 8px !important;
+  width: 100% !important;
+}
+
+.vitae-login-password .p-inputtext {
+  border-radius: 8px !important;
+}
