@@ -52,7 +52,7 @@ const Login: React.FC = () => {
 
           <div className="field mb-4">
             <span className="p-input-icon-left">
-              <i className="pi pi-user vitae-login-icon" />
+              
               <InputText
                 id="username"
                 value={username}
