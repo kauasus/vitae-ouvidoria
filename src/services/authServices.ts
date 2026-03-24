@@ -1,45 +1,93 @@
-import type { User, LoginCredentials } from "../types/auth";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// src/services/authServices.ts
+import api from "../api/api";
 
-const STORAGE_KEY = "vitae_auth_user";
+type LoginPayload = { username: string; password: string };
+type AuthResponse = { user: any; token: string };
 
-// Usuários mockados (em produção, isso viria de uma API)
-const MOCK_USERS = [
-  { id: "1", username: "admin", password: "admin123", role: "admin" as const, nome: "Administrador" },
-  { id: "2", username: "user", password: "user123", role: "user" as const, nome: "Usuário Comum" },
-];
+const STORAGE_TOKEN_KEY = "@Ouvidoria:token";
+const STORAGE_USER_KEY = "@Ouvidoria:user";
 
-class AuthService {
-  login(credentials: LoginCredentials): User | null {
-    const user = MOCK_USERS.find(
-      (u) => u.username === credentials.username && u.password === credentials.password
-    );
+export const authService = {
+  // Inicializa o header do axios com o token salvo (chame no startup do app)
+  init: () => {
+    const token = authService.getToken();
+    if (token) {
+      api.defaults.headers.common.Authorization = `Bearer ${token}`;
+    }
+  },
 
-    if (user) {
-      const { password, ...userWithoutPassword } = user;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(userWithoutPassword));
-      return userWithoutPassword;
+  // Faz login na API, salva token/user e configura header do axios
+  login: async ({ username, password }: LoginPayload): Promise<AuthResponse> => {
+    const resp = await api.post("/auth/login", { username, password });
+    const { user, token } = resp.data as AuthResponse;
+
+    if (!token) throw new Error("Resposta do servidor sem token");
+
+    localStorage.setItem(STORAGE_TOKEN_KEY, token);
+    localStorage.setItem(STORAGE_USER_KEY, JSON.stringify(user));
+    api.defaults.headers.common.Authorization = `Bearer ${token}`;
+
+    return { user, token };
+  },
+
+  // Logout: remove token/user e limpa header
+  logout: () => {
+    localStorage.removeItem(STORAGE_TOKEN_KEY);
+    localStorage.removeItem(STORAGE_USER_KEY);
+    delete api.defaults.headers.common.Authorization;
+  },
+
+  // Retorna o usuário atual (ou null)
+  getCurrentUser: (): any | null => {
+    const raw = localStorage.getItem(STORAGE_USER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  },
+
+  // Retorna o token (ou null)
+  getToken: (): string | null => {
+    return localStorage.getItem(STORAGE_TOKEN_KEY);
+  },
+
+  // Verifica se existe token e se ainda não expirou (checa exp do JWT)
+  isAuthenticated: (): boolean => {
+    const token = authService.getToken();
+    if (!token) return false;
+
+    try {
+      const parts = token.split(".");
+      if (parts.length !== 3) return false;
+      const payload = JSON.parse(atob(parts[1]));
+      if (payload && payload.exp && typeof payload.exp === "number") {
+        return payload.exp * 1000 > Date.now();
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
+  // Verifica se o usuário atual tem role 'admin'
+  isAdmin: (): boolean => {
+    const user = authService.getCurrentUser();
+    if (user && user.role) {
+      return String(user.role).toLowerCase() === "admin";
     }
 
-    return null;
-  }
+    const token = authService.getToken();
+    if (!token) return false;
 
-  logout(): void {
-    localStorage.removeItem(STORAGE_KEY);
-  }
+    try {
+      const parts = token.split(".");
+      if (parts.length !== 3) return false;
+      const payload = JSON.parse(atob(parts[1]));
+      if (payload && payload.role) {
+        return String(payload.role).toLowerCase() === "admin";
+      }
+    } catch {
+      // ignore parse errors
+    }
 
-  getCurrentUser(): User | null {
-    const data = localStorage.getItem(STORAGE_KEY);
-    return data ? JSON.parse(data) : null;
-  }
-
-  isAuthenticated(): boolean {
-    return this.getCurrentUser() !== null;
-  }
-
-  isAdmin(): boolean {
-    const user = this.getCurrentUser();
-    return user?.role === "admin";
-  }
-}
-
-export const authService = new AuthService();
+    return false;
+  },
+};

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "primereact/card";
@@ -6,8 +7,8 @@ import { Password } from "primereact/password";
 import { Button } from "primereact/button";
 import { Message } from "primereact/message";
 import { authService } from "../services/authServices";
-import logo from "../assets/vitae.png"; // Ajuste o caminho se necessário
-import "./Login.css"; // Importa o CSS específico
+import logo from "../assets/vitae.png";
+import "./Login.css";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -16,20 +17,24 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    setTimeout(() => {
-      const user = authService.login({ username, password });
-      if (user) {
-        navigate("/dashboard");
-      } else {
-        setError("Usuário ou senha inválidos");
-      }
+    try {
+      await authService.login({ username, password });
+      navigate("/dashboard");
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        "Erro ao autenticar";
+      setError(String(msg));
+    } finally {
       setLoading(false);
-    }, 800);
+    }
   };
 
   const header = (
@@ -48,11 +53,12 @@ const Login: React.FC = () => {
         </div>
 
         <form onSubmit={handleLogin} className="p-fluid">
-          {error && <Message severity="error" text={error} className="mb-4 w-full" />}
+          {error && (
+            <Message severity="error" text={error} className="mb-4 w-full" />
+          )}
 
           <div className="field mb-4">
             <span className="p-input-icon-left">
-              
               <InputText
                 id="username"
                 value={username}

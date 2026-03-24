@@ -1,24 +1,29 @@
-import { type Manifestation } from "../types/manifestation";
+// src/services/ouvidoriaService.ts
+import api from "../api/api";
+import type { CreateManifestationDTO } from "../types/createManifestation.dto";
+import type { Manifestation } from "../types/manifestation";
 
-const STORAGE_KEY = "vitae_ouvidoria_db";
+export type Metricas = { total: number; elogios: number; reclamacoes: number; };
 
 export const ouvidoriaService = {
-  listar: (): Manifestation[] => JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"),
-  
-  salvar: (m: Manifestation) => {
-    const lista = ouvidoriaService.listar();
-    const index = lista.findIndex(item => item.id === m.id);
-    index >= 0 ? (lista[index] = m) : lista.unshift({ ...m, id: Date.now() });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
+  async getMetricas(): Promise<Metricas> {
+    const resp = await api.get("/manifestation/metrics");
+    return resp.data as Metricas;
   },
 
-  getMetricas: () => {
-    const lista = ouvidoriaService.listar();
-    return {
-      total: lista.length,
-      elogios: lista.filter(m => m.tipo === "ELOGIO").length,
-      reclamacoes: lista.filter(m => m.tipo === "RECLAMACAO").length,
-      resolvidos: lista.filter(m => m.status === "RESOLVIDO").length
-    };
-  }
+  async listManifestations(): Promise<Manifestation[]> {
+    const resp = await api.get("/manifestation");
+    return resp.data as Manifestation[];
+  },
+
+  // RECEBE O DTO explicitamente (tipagem correta)
+  async createManifestation(payload: CreateManifestationDTO) {
+    const resp = await api.post("/manifestation", payload);
+    return resp.data;
+  },
+
+  // Se já tem "salvar", você pode manter um alias:
+  async salvar(payload: CreateManifestationDTO) {
+    return this.createManifestation(payload);
+  },
 };

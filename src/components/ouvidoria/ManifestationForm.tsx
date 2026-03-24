@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
@@ -6,37 +7,48 @@ import { Dropdown } from "primereact/dropdown";
 import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
-import type { Manifestation, Person, Tipo, Canal, Status } from "../../types/manifestation";
+import type {
+  Manifestation,
+  Person,
+  Tipo,
+  Canal,
+  Status,
+} from "../../types/manifestation";
 
 type Props = {
   visible: boolean;
   onHide: () => void;
   onSave: (m: Manifestation) => void;
   initial?: Partial<Manifestation>;
+  loading?: boolean;
 };
 
 const tipos: { label: string; value: Tipo }[] = [
-  { label: "Elogio", value: "ELOGIO" },
-  { label: "Reclamação", value: "RECLAMACAO" },
+  { label: "Elogio", value: { id: 1, dsc_tipo: "ELOGIO" } },
+  { label: "Reclamação", value: { id: 1, dsc_tipo: "RECLAMACAO" } },
 ];
 
 const canais: { label: string; value: Canal }[] = [
-  { label: "WhatsApp", value: "WHATSAPP" },
-  { label: "Reclame Aqui", value: "RECLAME_AQUI" },
-  { label: "Google", value: "GOOGLE" },
-  { label: "E-mail", value: "EMAIL" },
+  { label: "WhatsApp", value: { id: 1, dsc_canal: "WHATSAPP" } },
+  { label: "Reclame Aqui", value: { id: 5, dsc_canal: "RECLAME_AQUI" } },
+  { label: "Google", value: { id: 6, dsc_canal: "GOOGLE" } },
+  { label: "E-mail", value: { id: 2, dsc_canal: "EMAIL" } },
 ];
 
 const statusOptions: { label: string; value: Status }[] = [
-  { label: "Pendente", value: "PENDENTE" },
-  { label: "Em Andamento", value: "EM_ANDAMENTO" },
-  { label: "Resolvido", value: "RESOLVIDO" },
+  { label: "Pendente", value: { id: 1, dsc_status: "PENDENTE" } },
+  { label: "Em Andamento", value: { id: 2, dsc_status: "EM_ANDAMENTO" } },
+  { label: "Resolvido", value: { id: 3, dsc_status: "Finalizado" } },
 ];
 
-const tipoOptionTemplate = (option: { label: string; value: Tipo } | undefined) => {
+const tipoOptionTemplate = (
+  option: { label: string; value: Tipo } | undefined,
+) => {
   if (!option) return null;
   const iconClass =
-    option.value === "ELOGIO" ? "pi-heart-fill text-vitae-green" : "pi-exclamation-triangle text-vitae-red";
+    option.value.dsc_tipo === "ELOGIO"
+      ? "pi-heart-fill text-vitae-green"
+      : "pi-exclamation-triangle text-vitae-red";
   return (
     <div className="flex align-items-center">
       <i className={`pi ${iconClass} mr-2`} />
@@ -45,9 +57,11 @@ const tipoOptionTemplate = (option: { label: string; value: Tipo } | undefined) 
   );
 };
 
-const canalOptionTemplate = (option: { label: string; value: Canal } | undefined) => {
+const canalOptionTemplate = (
+  option: { label: string; value: Canal } | undefined,
+) => {
   if (!option) return null;
-  const icons: Record<Canal, string> = {
+  const icons: Record<string, string> = {
     WHATSAPP: "pi-whatsapp",
     RECLAME_AQUI: "pi-megaphone",
     GOOGLE: "pi-google",
@@ -55,24 +69,38 @@ const canalOptionTemplate = (option: { label: string; value: Canal } | undefined
   };
   return (
     <div className="flex align-items-center">
-      <i className={`pi ${icons[option.value]} mr-2 text-vitae-blue`} />
+      <i
+        className={`pi ${icons[option.value.dsc_canal]} mr-2 text-vitae-blue`}
+      />
       <span>{option.label}</span>
     </div>
   );
 };
 
-const ManifestationForm: React.FC<Props> = ({ visible, onHide, onSave, initial }) => {
-  const emptyPerson = (): Person => ({ nome: "", cpf: "", telefone: "", email: "" });
+const ManifestationForm: React.FC<Props> = ({
+  visible,
+  onHide,
+  onSave,
+  initial,
+  loading = false,
+}) => {
+  const emptyPerson = (): Person => ({
+    nome: "",
+    cpf: "",
+    telefone: "",
+    email: "",
+  });
 
   const [manifestation, setManifestation] = useState<Manifestation>({
+    // eslint-disable-next-line react-hooks/purity
     id: Date.now(),
-    tipo: "ELOGIO",
-    canalOrigem: "WHATSAPP",
+    tipo: { id: 1, dsc_tipo: "ELOGIO" },
+    canalOrigem: { id: 1, dsc_canal: "WHATSAPP" },
     descricao: "",
     solicitante: emptyPerson(),
     paciente: emptyPerson(),
     solicitanteEhPaciente: false,
-    status: "PENDENTE",
+    status: { id: 1, dsc_status: "PENDENTE" },
     dataRegistro: new Date().toISOString(),
   });
 
@@ -86,13 +114,18 @@ const ManifestationForm: React.FC<Props> = ({ visible, onHide, onSave, initial }
       return {
         ...prev,
         solicitante,
-        paciente: prev.solicitanteEhPaciente ? { ...solicitante } : prev.paciente,
+        paciente: prev.solicitanteEhPaciente
+          ? { ...solicitante }
+          : prev.paciente,
       };
     });
   };
 
   const onChangePaciente = (field: keyof Person, value: any) => {
-    setManifestation((prev) => ({ ...prev, paciente: { ...prev.paciente, [field]: value } }));
+    setManifestation((prev) => ({
+      ...prev,
+      paciente: { ...prev.paciente, [field]: value },
+    }));
   };
 
   const toggleSolicitanteEhPaciente = (checked: boolean) => {
@@ -128,6 +161,7 @@ const ManifestationForm: React.FC<Props> = ({ visible, onHide, onSave, initial }
         icon="pi pi-check"
         className="p-button-raised p-button-registrar"
         onClick={handleSave}
+        disabled={loading}
       />
     </div>
   );
@@ -138,7 +172,10 @@ const ManifestationForm: React.FC<Props> = ({ visible, onHide, onSave, initial }
       onHide={onHide}
       header={
         <div className="flex align-items-center gap-2">
-          <i className="pi pi-file-edit text-vitae-red" style={{ fontSize: "1.25rem" }} />
+          <i
+            className="pi pi-file-edit text-vitae-red"
+            style={{ fontSize: "1.25rem" }}
+          />
           <span>Nova Manifestação</span>
         </div>
       }
@@ -161,7 +198,9 @@ const ManifestationForm: React.FC<Props> = ({ visible, onHide, onSave, initial }
             itemTemplate={tipoOptionTemplate}
             optionLabel="label"
             optionValue="value"
-            onChange={(e) => setManifestation({ ...manifestation, tipo: e.value })}
+            onChange={(e) =>
+              setManifestation({ ...manifestation, tipo: e.value })
+            }
             placeholder="Selecione o tipo"
           />
         </div>
@@ -177,7 +216,9 @@ const ManifestationForm: React.FC<Props> = ({ visible, onHide, onSave, initial }
             itemTemplate={canalOptionTemplate}
             optionLabel="label"
             optionValue="value"
-            onChange={(e) => setManifestation({ ...manifestation, canalOrigem: e.value })}
+            onChange={(e) =>
+              setManifestation({ ...manifestation, canalOrigem: e.value })
+            }
             placeholder="Selecione o canal"
           />
         </div>
@@ -189,7 +230,9 @@ const ManifestationForm: React.FC<Props> = ({ visible, onHide, onSave, initial }
           </div>
           <InputTextarea
             value={manifestation.descricao}
-            onChange={(e) => setManifestation({ ...manifestation, descricao: e.target.value })}
+            onChange={(e) =>
+              setManifestation({ ...manifestation, descricao: e.target.value })
+            }
             rows={5}
             autoResize
             placeholder="Descreva o ocorrido com o máximo de detalhes..."
@@ -205,7 +248,9 @@ const ManifestationForm: React.FC<Props> = ({ visible, onHide, onSave, initial }
 
         <div className="col-12 md:col-8 field">
           <div className="input-with-icon-top">
-            <div className="icon"><i className="pi pi-user" /></div>
+            <div className="icon">
+              <i className="pi pi-user" />
+            </div>
             <div className="input-wrapper">
               <InputText
                 placeholder="Nome completo"
@@ -218,7 +263,9 @@ const ManifestationForm: React.FC<Props> = ({ visible, onHide, onSave, initial }
 
         <div className="col-12 md:col-4 field">
           <div className="input-with-icon-top">
-            <div className="icon"><i className="pi pi-id-card" /></div>
+            <div className="icon">
+              <i className="pi pi-id-card" />
+            </div>
             <div className="input-wrapper">
               <InputText
                 placeholder="CPF"
@@ -230,8 +277,18 @@ const ManifestationForm: React.FC<Props> = ({ visible, onHide, onSave, initial }
         </div>
 
         <div className="col-12 field flex align-items-center gap-2">
-          <Checkbox inputId="isPatient" checked={manifestation.solicitanteEhPaciente} onChange={(e: any) => toggleSolicitanteEhPaciente(e.checked ?? false)} />
-          <label htmlFor="isPatient" className="cursor-pointer text-sm" style={{ color: "var(--vitae-gray-text)" }}>
+          <Checkbox
+            inputId="isPatient"
+            checked={manifestation.solicitanteEhPaciente ?? false}
+            onChange={(e) =>
+              toggleSolicitanteEhPaciente(e.target.checked ?? false)
+            }
+          />
+          <label
+            htmlFor="isPatient"
+            className="cursor-pointer text-sm"
+            style={{ color: "var(--vitae-gray-text)" }}
+          >
             O solicitante é o próprio paciente
           </label>
         </div>
@@ -247,7 +304,9 @@ const ManifestationForm: React.FC<Props> = ({ visible, onHide, onSave, initial }
 
             <div className="col-12 md:col-8 field">
               <div className="input-with-icon-top">
-                <div className="icon"><i className="pi pi-user" /></div>
+                <div className="icon">
+                  <i className="pi pi-user" />
+                </div>
                 <div className="input-wrapper">
                   <InputText
                     placeholder="Nome do paciente"
@@ -260,12 +319,16 @@ const ManifestationForm: React.FC<Props> = ({ visible, onHide, onSave, initial }
 
             <div className="col-12 md:col-4 field">
               <div className="input-with-icon-top">
-                <div className="icon"><i className="pi pi-id-card" /></div>
+                <div className="icon">
+                  <i className="pi pi-id-card" />
+                </div>
                 <div className="input-wrapper">
                   <InputText
                     placeholder="CPF do paciente"
                     value={manifestation.paciente.cpf}
-                    onChange={(e) => onChangePaciente("cpf", e.target.value)}
+                    onChange={(e) =>
+                      onChangePaciente("cpf", e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -281,11 +344,19 @@ const ManifestationForm: React.FC<Props> = ({ visible, onHide, onSave, initial }
             <span>Status Inicial</span>
           </div>
           <Dropdown
-            value={manifestation.status}
+            value={manifestation.status.dsc_status}
             options={statusOptions}
             optionLabel="label"
             optionValue="value"
-            onChange={(e) => setManifestation({ ...manifestation, status: e.value })}
+            onChange={(e) =>
+              setManifestation({
+                ...manifestation,
+                status: {
+                  dsc_status: e.value,
+                  id: 0,
+                },
+              })
+            }
             placeholder="Selecione o status"
           />
         </div>
