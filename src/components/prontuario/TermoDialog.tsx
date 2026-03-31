@@ -1,7 +1,4 @@
 import React from "react";
-import { Dialog } from "primereact/dialog";
-import { Checkbox } from "primereact/checkbox";
-import { Button } from "primereact/button";
 
 type Props = {
   visible: boolean;
@@ -24,85 +21,123 @@ const TermoDialog: React.FC<Props> = ({
   onChangeAceite,
   onConfirmar,
 }) => {
-  const footer = (
-    <div className="flex justify-content-end gap-2 pt-3">
-      <Button label="Cancelar" icon="pi pi-times" className="p-button-cancelar" onClick={onHide} />
-      <Button
-        label="Confirmar Solicitação"
-        icon="pi pi-check"
-        className="p-button-registrar"
-        onClick={onConfirmar}
-        disabled={!aceitou}
-      />
-    </div>
-  );
+  if (!visible) return null;
 
   return (
-    <Dialog
-      visible={visible}
-      onHide={onHide}
-      header="Termo de Responsabilidade para Retirada de Prontuário Médico"
-      style={{ width: "700px", maxHeight: "80vh" }}
-      footer={footer}
-      modal
-    >
-      <div style={{ maxHeight: "500px", overflowY: "auto", padding: "1rem" }}>
-        <h3 className="text-center mb-4">TERMO DE RESPONSABILIDADE</h3>
-        <p style={{ textAlign: "justify", lineHeight: "1.8" }}>
-          Eu, <strong>{nome || "___________________"}</strong>, portador(a) do CPF{" "}
-          <strong>{cpf || "___________________"}</strong>, nascido(a) em{" "}
-          <strong>
-            {dataNascimento ? new Date(dataNascimento).toLocaleDateString("pt-BR") : "___/___/___"}
-          </strong>
-          , declaro para os devidos fins que:
-        </p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Overlay */}
+      <div
+        className="absolute inset-0 bg-black/60"
+        onClick={onHide}
+        aria-hidden="true"
+      />
 
-        <ol style={{ textAlign: "justify", lineHeight: "1.8", paddingLeft: "1.5rem" }}>
-          <li className="mb-3">
-            Solicito a <strong>retirada/transferência do meu prontuário médico</strong> junto à{" "}
-            <strong>Vitae Center</strong>, estando ciente de que este documento contém informações
-            confidenciais sobre meu histórico de saúde.
-          </li>
-          <li className="mb-3">
-            Assumo total <strong>responsabilidade</strong> pela guarda, uso e confidencialidade das
-            informações contidas no prontuário médico retirado.
-          </li>
-          <li className="mb-3">
-            Estou ciente de que a <strong>Vitae Center</strong> não se responsabiliza por qualquer
-            uso indevido, extravio, dano ou divulgação não autorizada do prontuário após sua
-            retirada.
-          </li>
-          <li className="mb-3">
-            Comprometo-me a utilizar o prontuário médico exclusivamente para fins legítimos,
-            respeitando a legislação vigente sobre proteção de dados pessoais (Lei nº 13.709/2018 -
-            LGPD).
-          </li>
-          <li className="mb-3">
-            Declaro que as informações fornecidas neste termo são verdadeiras e que estou ciente das
-            implicações legais de declarações falsas.
-          </li>
-        </ol>
+      {/* Modal */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="termo-title"
+        className="relative z-10 max-w-3xl w-full mx-4"
+      >
+        <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+          {/* Header */}
+          <div className="flex items-start justify-between px-6 py-4 border-b">
+            <h3 id="termo-title" className="text-lg font-semibold text-gray-900">
+              Termo de Responsabilidade para Retirada de Prontuário Médico
+            </h3>
+            <button
+              onClick={onHide}
+              className="text-gray-400 hover:text-gray-600 ml-4 rounded focus:outline-none"
+              aria-label="Fechar"
+            >
+              <span className="text-2xl leading-none">&times;</span>
+            </button>
+          </div>
 
-        <p style={{ textAlign: "justify", lineHeight: "1.8", marginTop: "1.5rem" }}>
-          Por ser expressão da verdade, firmo o presente termo.
-        </p>
+          {/* Body */}
+          <div className="px-6 py-5 max-h-[60vh] overflow-y-auto">
+            <h4 className="text-center text-base font-bold mb-4">TERMO DE RESPONSABILIDADE</h4>
 
-        <p style={{ textAlign: "right", marginTop: "2rem", fontStyle: "italic" }}>
-          Data: {new Date().toLocaleDateString("pt-BR")}
-        </p>
+            <p className="text-justify text-gray-700 leading-relaxed mb-4">
+              Eu, <strong>{nome || "___________________"}</strong>, portador(a) do CPF{" "}
+              <strong>{cpf || "___________________"}</strong>, nascido(a) em{" "}
+              <strong>
+                {dataNascimento ? new Date(dataNascimento).toLocaleDateString("pt-BR") : "___/___/___"}
+              </strong>
+              , declaro para os devidos fins que:
+            </p>
 
-        <div className="flex align-items-center gap-2 mt-4 p-3" style={{ background: "#f9fafb", borderRadius: "8px" }}>
-          <Checkbox
-            inputId="aceite"
-            checked={aceitou}
-            onChange={(e) => onChangeAceite(e.checked ?? false)}
-          />
-          <label htmlFor="aceite" className="cursor-pointer font-bold">
-            Estou ciente do termo acima e aceito todas as condições.
-          </label>
+            <ol className="list-decimal list-inside space-y-3 text-justify text-gray-700 leading-relaxed mb-4 pl-4">
+              <li>
+                Solicito a <strong>retirada/transferência do meu prontuário médico</strong> junto à{" "}
+                <strong>Vitae Center</strong>, estando ciente de que este documento contém informações
+                confidenciais sobre meu histórico de saúde.
+              </li>
+              <li>
+                Assumo total <strong>responsabilidade</strong> pela guarda, uso e confidencialidade das
+                informações contidas no prontuário médico retirado.
+              </li>
+              <li>
+                Estou ciente de que a <strong>Vitae Center</strong> não se responsabiliza por qualquer
+                uso indevido, extravio, dano ou divulgação não autorizada do prontuário após sua
+                retirada.
+              </li>
+              <li>
+                Comprometo-me a utilizar o prontuário médico exclusivamente para fins legítimos,
+                respeitando a legislação vigente sobre proteção de dados pessoais (Lei nº 13.709/2018 -
+                LGPD).
+              </li>
+              <li>
+                Declaro que as informações fornecidas neste termo são verdadeiras e que estou ciente das
+                implicações legais de declarações falsas.
+              </li>
+            </ol>
+
+            <p className="text-justify text-gray-700 leading-relaxed mt-4">
+              Por ser expressão da verdade, firmo o presente termo.
+            </p>
+
+            <p className="text-right text-sm italic text-gray-600 mt-6">
+              Data: {new Date().toLocaleDateString("pt-BR")}
+            </p>
+
+            <div className="mt-6 bg-gray-50 rounded-md p-4 flex items-start gap-3">
+              <input
+                id="aceite"
+                type="checkbox"
+                checked={aceitou}
+                onChange={(e) => onChangeAceite(e.target.checked)}
+                className="h-5 w-5 text-red-600 rounded focus:ring-red-500"
+              />
+              <label htmlFor="aceite" className="cursor-pointer font-semibold text-gray-800">
+                Estou ciente do termo acima e aceito todas as condições.
+              </label>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="px-6 py-4 border-t flex justify-end gap-3">
+            <button
+              onClick={onHide}
+              className="px-4 py-2 rounded-md bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200 transition"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={onConfirmar}
+              disabled={!aceitou}
+              className={`px-4 py-2 rounded-md text-white focus:outline-none focus:ring-2 transition ${
+                aceitou
+                  ? "bg-red-600 hover:bg-red-700 focus:ring-red-500"
+                  : "bg-red-400/60 cursor-not-allowed"
+              }`}
+            >
+              Confirmar Solicitação
+            </button>
+          </div>
         </div>
       </div>
-    </Dialog>
+    </div>
   );
 };
 

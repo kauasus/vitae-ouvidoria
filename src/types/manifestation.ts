@@ -1,33 +1,32 @@
-// src/types/manifestation.ts
-export type Canal = {
-    id: number;
-    dsc_canal: string;
-}
-export type Tipo = {
-  id: number;
-  dsc_tipo: string;
-}
-export type Status = {
-  id: number;
-  dsc_status: string;
-}
-export interface Person {
+export type Person = {
+  id?: number;
   nome: string;
-  cpf?: string;
-  telefone?: string;
-  email?: string;
-  dataNascimento?: string | null;
-  tipoAtendimento?: string | null;
-}
+  cpf?: string | null;
+  telefone?: string | null;
+  email?: string | null;
+};
 
-export interface Manifestation {
-  id: number | string;
+export type Tipo = { id: number; dsc_tipo: string };
+export type Canal = { id: number; dsc_canal: string };
+export type Status = { id: number; dsc_status: string };
+
+export type UsersShort = {
+  id: string; // uuid
+  username: string;
+  nome?: string | null;
+  role?: string | null;
+};
+
+export type Manifestation = {
+  canalOrigem: string;
+  anexos: boolean;
+  id?: number;
   tipo: Tipo;
-  canalOrigem: Canal;
+  canal: Canal;
+  status: Status;
   descricao: string;
   solicitante: Person;
-  paciente: Person;
-  solicitanteEhPaciente?: boolean;
-  status: Status;
-  dataRegistro: string; // ISO
-}
+  paciente?: Person | null;
+  usuario?: UsersShort;
+  dataRegistro?: string | null;
+};

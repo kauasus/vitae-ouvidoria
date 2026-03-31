@@ -3,21 +3,21 @@ export type LinkTemporario = {
   login: string;
   senha: string;
   dataExpiracao: string;
+  data_criacao: string;
   ativo: boolean;
   usado: boolean;
-  dataCriacao: string;
 };
 
 export type SolicitacaoProntuario = {
-  id: string;
+  id?: string;
   linkId: string;
-  nome: string;
+  nomeCompleto: string;
   cpf: string;
   dataNascimento: string;
   telefone: string;
   email: string;
   motivo: string;
   aceitouTermo: boolean;
-  dataHoraSolicitacao: string;
+  dataHoraSolicitacao?: string;
   ipOrigem?: string;
 };

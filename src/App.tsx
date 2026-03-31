@@ -34,13 +34,11 @@ const App: React.FC = () => {
           path="/*"
           element={
             <ProtectedRoute>
-              <div style={{ display: "flex", height: "100vh" }}>
+              <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
                 <Sidebar />
-                <div
-                  style={{ flex: 1, display: "flex", flexDirection: "column" }}
-                >
+                <div className="flex flex-col flex-1 min-w-0">
                   <Header />
-                  <main style={{ flex: 1, overflow: "auto", padding: "20px" }}>
+                  <main className="flex-1 overflow-y-auto w-full max-w-7xl mx-auto p-4 md:p-8">
                     <AppRoutes />
                   </main>
                 </div>

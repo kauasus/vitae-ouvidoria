@@ -14,15 +14,7 @@ const AppRoutes: React.FC = () => (
     <Route path="/manifestations" element={<ListManifestations />} />
     <Route path="/manifestations/:id" element={<DetailsManifestation />} />
     
-    {/* Rota protegida apenas para admin */}
-    <Route
-      path="/prontuario/admin"
-      element={
-        <ProtectedRoute requireAdmin>
-          <ProntuarioAdmin />
-        </ProtectedRoute>
-      }
-    />
+    <Route path="/prontuario/admin" element={<ProntuarioAdmin />} />
     
     <Route path="*" element={<Navigate to="/dashboard" replace />} />
   </Routes>

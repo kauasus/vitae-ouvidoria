@@ -1,7 +1,7 @@
 import React from "react";
-import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../../services/authServices";
+import { LogOut, Bell, User } from "lucide-react";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -13,31 +13,40 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header
-      style={{
-        background: "#2c2c2c",
-        color: "#fff",
-        padding: "12px 24px",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        borderBottom: "1px solid rgba(255,255,255,0.1)",
-      }}
-    >
-      <div>
-        <h2 style={{ margin: 0, fontSize: "1.2rem" }}>Vitae Center</h2>
+    <header className="h-16 bg-white border-b border-gray-200 px-8 flex justify-between items-center z-10 sticky top-0 shadow-sm shrink-0">
+      <div className="flex items-center gap-4">
         {user && (
-          <p style={{ margin: 0, fontSize: "0.85rem", opacity: 0.7 }}>
-            Olá, {user.nome} ({user.role === "admin" ? "Administrador" : "Usuário"})
-          </p>
+          <div>
+            <h2 className="text-gray-900 font-semibold text-sm m-0 leading-tight">Olá, {user.nome}</h2>
+            <p className="text-xs text-gray-500 font-medium m-0">
+              Perfil: {user.role === "admin" ? "Administrador" : "Usuário Base"}
+            </p>
+          </div>
         )}
       </div>
-      <Button
-        label="Sair"
-        icon="pi pi-sign-out"
-        className="p-button-sm p-button-danger"
-        onClick={handleLogout}
-      />
+      
+      <div className="flex items-center gap-6">
+        <button className="text-gray-400 hover:text-red-500 transition-colors relative focus:outline-none">
+          <Bell className="w-5 h-5" />
+          <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+        </button>
+
+        <div className="w-px h-6 bg-gray-200"></div>
+
+        <div className="flex items-center gap-4">
+          <div className="w-9 h-9 bg-red-50 text-red-600 rounded-full flex items-center justify-center font-bold text-sm shadow-inner">
+            {user?.nome ? user.nome.charAt(0).toUpperCase() : <User className="w-4 h-4" />}
+          </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-red-600 transition-colors focus:outline-none"
+            aria-label="Sair do sistema"
+          >
+            Sair
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
     </header>
   );
 };
