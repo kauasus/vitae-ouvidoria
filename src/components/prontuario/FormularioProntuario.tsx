@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import type { SolicitacaoProntuario } from "../../types/prontuarios";
 import TermoDialog from "./TermoDialog";
@@ -119,7 +120,7 @@ const FormularioProntuario: React.FC<Props> = ({ linkId, onSucesso }) => {
           </label>
           <input
             id="cpf"
-            type="text"
+            type="number"
             value={cpf}
             onChange={(e) => setCpf(e.target.value)}
             maxLength={14}

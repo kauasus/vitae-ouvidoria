@@ -215,7 +215,7 @@ const ManifestationForm: React.FC<Props> = ({ visible, onHide, onSave, initial, 
                       <label htmlFor="solicitante-cpf" className="text-sm font-medium text-gray-600">CPF</label>
                       <input
                         id="solicitante-cpf"
-                        type="text"
+                        type="number"
                         placeholder="000.000.000-00"
                         value={dto.solicitante?.cpf ?? ""}
                         onChange={(e) => onChangeSolicitante("cpf", e.target.value)}
@@ -265,7 +265,7 @@ const ManifestationForm: React.FC<Props> = ({ visible, onHide, onSave, initial, 
                         <label htmlFor="paciente-cpf" className="text-sm font-medium text-gray-600">CPF do Paciente</label>
                         <input
                           id="paciente-cpf"
-                          type="text"
+                          type="number"
                           placeholder="000.000.000-00"
                           value={dto.paciente?.cpf ?? ""}
                           onChange={(e) => onChangePaciente("cpf", e.target.value)}

@@ -6,7 +6,10 @@ type LoginPayload = { username: string; password: string };
 type AuthResponse = { user: any; token: string };
 
 // Tipo seguro — apenas os campos necessários para o funcionamento do app
-type SafeUser = { id: string | number; name?: string; username?: string; role?: string };
+type SafeUser = {
+  nome: ReactNode;
+  nome: ReactNode; id: string | number; name?: string; username?: string; role?: string 
+};
 
 const STORAGE_TOKEN_KEY = "@Ouvidoria:token";
 const STORAGE_USER_KEY = "@Ouvidoria:user";
